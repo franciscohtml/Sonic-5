@@ -4507,12 +4507,14 @@ true,nt,brushData);const w=this._auto.IsTileValid(west,true,wt,brushData);const 
 }
 
 {
-'use strict';{const C3=self.C3;C3.Behaviors.solid=class SolidBehavior extends C3.SDKBehaviorBase{constructor(opts){super(opts)}Release(){super.Release()}}}{const C3=self.C3;C3.Behaviors.solid.Type=class SolidType extends C3.SDKBehaviorTypeBase{constructor(behaviorType){super(behaviorType)}Release(){super.Release()}OnCreate(){}}}
-{const C3=self.C3;const C3X=self.C3X;const IBehaviorInstance=self.IBehaviorInstance;const ENABLE=0;const TAGS=1;const EMPTY_SET=new Set;C3.Behaviors.solid.Instance=class SolidInstance extends C3.SDKBehaviorInstanceBase{constructor(behInst,properties){super(behInst);this.SetEnabled(true);if(properties){this.SetEnabled(properties[ENABLE]);this.SetTags(properties[TAGS])}}Release(){super.Release()}SetEnabled(e){this._inst._SetSolidEnabled(!!e)}IsEnabled(){return this._inst._IsSolidEnabled()}SetTags(tagList){const savedDataMap=
-this._inst.GetSavedDataMap();if(!tagList.trim()){savedDataMap.delete("solidTags");return}let solidTags=savedDataMap.get("solidTags");if(!solidTags){solidTags=new Set;savedDataMap.set("solidTags",solidTags)}solidTags.clear();for(const tag of tagList.split(" "))if(tag)solidTags.add(tag.toLowerCase())}GetTags(){return this._inst.GetSavedDataMap().get("solidTags")||EMPTY_SET}_GetTagsString(){return[...this.GetTags()].join(" ")}SaveToJson(){return{"e":this.IsEnabled()}}LoadFromJson(o){this.SetEnabled(o["e"])}GetPropertyValueByIndex(index){switch(index){case ENABLE:return this.IsEnabled()}}SetPropertyValueByIndex(index,
-value){switch(index){case ENABLE:this.SetEnabled(value);break}}GetDebuggerProperties(){return[{title:"$"+this.GetBehaviorType().GetName(),properties:[{name:"behaviors.solid.properties.enabled.name",value:this.IsEnabled(),onedit:v=>this.SetEnabled(v)},{name:"behaviors.solid.properties.tags.name",value:this._GetTagsString(),onedit:v=>this.SetTags(v)}]}]}GetScriptInterfaceClass(){return self.ISolidBehaviorInstance}};const map=new WeakMap;self.ISolidBehaviorInstance=class ISolidBehaviorInstance extends IBehaviorInstance{constructor(){super();
-map.set(this,IBehaviorInstance._GetInitInst().GetSdkInstance())}set isEnabled(e){map.get(this).SetEnabled(!!e)}get isEnabled(){return map.get(this).IsEnabled()}set tags(str){C3X.RequireString(str);map.get(this).SetTags(str)}get tags(){return map.get(this)._GetTagsString()}}}{const C3=self.C3;C3.Behaviors.solid.Cnds={IsEnabled(){return this.IsEnabled()}}}{const C3=self.C3;C3.Behaviors.solid.Acts={SetEnabled(e){this.SetEnabled(e)},SetTags(tagList){this.SetTags(tagList)}}}
-{const C3=self.C3;C3.Behaviors.solid.Exps={}};
+'use strict';{const C3=self.C3;C3.Behaviors.scrollto=class ScrollToBehavior extends C3.SDKBehaviorBase{constructor(opts){super(opts);this._shakeMag=0;this._shakeStart=0;this._shakeEnd=0;this._shakeMode=0}Release(){super.Release()}SetShakeMagnitude(m){this._shakeMag=m}GetShakeMagnitude(){return this._shakeMag}SetShakeStart(s){this._shakeStart=s}GetShakeStart(){return this._shakeStart}SetShakeEnd(s){this._shakeEnd=s}GetShakeEnd(){return this._shakeEnd}SetShakeMode(m){this._shakeMode=m}GetShakeMode(){return this._shakeMode}}}
+{const C3=self.C3;C3.Behaviors.scrollto.Type=class ScrollToType extends C3.SDKBehaviorTypeBase{constructor(objectClass){super(objectClass)}Release(){super.Release()}OnCreate(){}}}
+{const C3=self.C3;const ENABLE=0;C3.Behaviors.scrollto.Instance=class ScrollToInstance extends C3.SDKBehaviorInstanceBase{constructor(inst,properties){super(inst);this._isEnabled=true;if(properties)this._isEnabled=properties[ENABLE];if(this._isEnabled)this._StartTicking2()}Release(){super.Release()}SaveToJson(){const behavior=this.GetBehavior();return{"e":this._isEnabled,"smg":behavior.GetShakeMagnitude(),"ss":behavior.GetShakeStart(),"se":behavior.GetShakeEnd(),"smd":behavior.GetShakeMode()}}LoadFromJson(o){const behavior=
+this.GetBehavior();behavior.SetShakeMagnitude(o["smg"]);behavior.SetShakeStart(o["ss"]);behavior.SetShakeEnd(o["se"]);behavior.SetShakeMode(o["smd"]);this._isEnabled=o["e"];if(this._isEnabled)this._StartTicking2();else this._StopTicking2()}_SetEnabled(e){this._isEnabled=!!e;if(this._isEnabled)this._StartTicking2();else this._StopTicking2()}IsEnabled(){return this._isEnabled}Tick2(){if(!this.IsEnabled())return;const dt=this._runtime.GetDt(this._inst);const behavior=this.GetBehavior();const allInstances=
+behavior.GetInstances();let sumX=0;let sumY=0;let count=0;for(const inst of allInstances){const behInst=inst.GetBehaviorInstanceFromCtor(C3.Behaviors.scrollto);if(!behInst||!behInst.GetSdkInstance().IsEnabled())continue;const wi=inst.GetWorldInfo();sumX+=wi.GetX();sumY+=wi.GetY();++count}const layout=this._inst.GetWorldInfo().GetLayout();const now=this._runtime.GetGameTime();let offX=0;let offY=0;if(now>=behavior.GetShakeStart()&&now<behavior.GetShakeEnd()){let mag=behavior.GetShakeMagnitude()*Math.min(this._runtime.GetTimeScale(),
+1);if(behavior.GetShakeMode()===0)mag*=1-(now-behavior.GetShakeStart())/(behavior.GetShakeEnd()-behavior.GetShakeStart());const a=this._runtime.Random()*Math.PI*2;const d=this._runtime.Random()*mag;offX=Math.cos(a)*d;offY=Math.sin(a)*d}layout.SetScrollX(sumX/count+offX);layout.SetScrollY(sumY/count+offY)}GetPropertyValueByIndex(index){switch(index){case ENABLE:return this._isEnabled}}SetPropertyValueByIndex(index,value){switch(index){case ENABLE:this._isEnabled=!!value;this._isEnabled?this._StartTicking2():
+this._StopTicking2();break}}GetDebuggerProperties(){const prefix="behaviors.scrollto";return[{title:"$"+this.GetBehaviorType().GetName(),properties:[{name:prefix+".properties.enabled.name",value:this.IsEnabled(),onedit:v=>this._SetEnabled(v)}]}]}}}{const C3=self.C3;C3.Behaviors.scrollto.Cnds={IsEnabled(){return this.IsEnabled()}}}
+{const C3=self.C3;C3.Behaviors.scrollto.Acts={Shake(mag,dur,mode){const behavior=this.GetBehavior();behavior.SetShakeMagnitude(mag);behavior.SetShakeStart(this._runtime.GetGameTime());behavior.SetShakeEnd(this._runtime.GetGameTime()+dur);behavior.SetShakeMode(mode)},SetEnabled(e){this._SetEnabled(e!==0)}}}{const C3=self.C3;C3.Behaviors.scrollto.Exps={}};
 
 }
 
@@ -4582,14 +4584,12 @@ JumpSustain(){return this._GetJumpSustain()*1E3}}};
 }
 
 {
-'use strict';{const C3=self.C3;C3.Behaviors.scrollto=class ScrollToBehavior extends C3.SDKBehaviorBase{constructor(opts){super(opts);this._shakeMag=0;this._shakeStart=0;this._shakeEnd=0;this._shakeMode=0}Release(){super.Release()}SetShakeMagnitude(m){this._shakeMag=m}GetShakeMagnitude(){return this._shakeMag}SetShakeStart(s){this._shakeStart=s}GetShakeStart(){return this._shakeStart}SetShakeEnd(s){this._shakeEnd=s}GetShakeEnd(){return this._shakeEnd}SetShakeMode(m){this._shakeMode=m}GetShakeMode(){return this._shakeMode}}}
-{const C3=self.C3;C3.Behaviors.scrollto.Type=class ScrollToType extends C3.SDKBehaviorTypeBase{constructor(objectClass){super(objectClass)}Release(){super.Release()}OnCreate(){}}}
-{const C3=self.C3;const ENABLE=0;C3.Behaviors.scrollto.Instance=class ScrollToInstance extends C3.SDKBehaviorInstanceBase{constructor(inst,properties){super(inst);this._isEnabled=true;if(properties)this._isEnabled=properties[ENABLE];if(this._isEnabled)this._StartTicking2()}Release(){super.Release()}SaveToJson(){const behavior=this.GetBehavior();return{"e":this._isEnabled,"smg":behavior.GetShakeMagnitude(),"ss":behavior.GetShakeStart(),"se":behavior.GetShakeEnd(),"smd":behavior.GetShakeMode()}}LoadFromJson(o){const behavior=
-this.GetBehavior();behavior.SetShakeMagnitude(o["smg"]);behavior.SetShakeStart(o["ss"]);behavior.SetShakeEnd(o["se"]);behavior.SetShakeMode(o["smd"]);this._isEnabled=o["e"];if(this._isEnabled)this._StartTicking2();else this._StopTicking2()}_SetEnabled(e){this._isEnabled=!!e;if(this._isEnabled)this._StartTicking2();else this._StopTicking2()}IsEnabled(){return this._isEnabled}Tick2(){if(!this.IsEnabled())return;const dt=this._runtime.GetDt(this._inst);const behavior=this.GetBehavior();const allInstances=
-behavior.GetInstances();let sumX=0;let sumY=0;let count=0;for(const inst of allInstances){const behInst=inst.GetBehaviorInstanceFromCtor(C3.Behaviors.scrollto);if(!behInst||!behInst.GetSdkInstance().IsEnabled())continue;const wi=inst.GetWorldInfo();sumX+=wi.GetX();sumY+=wi.GetY();++count}const layout=this._inst.GetWorldInfo().GetLayout();const now=this._runtime.GetGameTime();let offX=0;let offY=0;if(now>=behavior.GetShakeStart()&&now<behavior.GetShakeEnd()){let mag=behavior.GetShakeMagnitude()*Math.min(this._runtime.GetTimeScale(),
-1);if(behavior.GetShakeMode()===0)mag*=1-(now-behavior.GetShakeStart())/(behavior.GetShakeEnd()-behavior.GetShakeStart());const a=this._runtime.Random()*Math.PI*2;const d=this._runtime.Random()*mag;offX=Math.cos(a)*d;offY=Math.sin(a)*d}layout.SetScrollX(sumX/count+offX);layout.SetScrollY(sumY/count+offY)}GetPropertyValueByIndex(index){switch(index){case ENABLE:return this._isEnabled}}SetPropertyValueByIndex(index,value){switch(index){case ENABLE:this._isEnabled=!!value;this._isEnabled?this._StartTicking2():
-this._StopTicking2();break}}GetDebuggerProperties(){const prefix="behaviors.scrollto";return[{title:"$"+this.GetBehaviorType().GetName(),properties:[{name:prefix+".properties.enabled.name",value:this.IsEnabled(),onedit:v=>this._SetEnabled(v)}]}]}}}{const C3=self.C3;C3.Behaviors.scrollto.Cnds={IsEnabled(){return this.IsEnabled()}}}
-{const C3=self.C3;C3.Behaviors.scrollto.Acts={Shake(mag,dur,mode){const behavior=this.GetBehavior();behavior.SetShakeMagnitude(mag);behavior.SetShakeStart(this._runtime.GetGameTime());behavior.SetShakeEnd(this._runtime.GetGameTime()+dur);behavior.SetShakeMode(mode)},SetEnabled(e){this._SetEnabled(e!==0)}}}{const C3=self.C3;C3.Behaviors.scrollto.Exps={}};
+'use strict';{const C3=self.C3;C3.Behaviors.solid=class SolidBehavior extends C3.SDKBehaviorBase{constructor(opts){super(opts)}Release(){super.Release()}}}{const C3=self.C3;C3.Behaviors.solid.Type=class SolidType extends C3.SDKBehaviorTypeBase{constructor(behaviorType){super(behaviorType)}Release(){super.Release()}OnCreate(){}}}
+{const C3=self.C3;const C3X=self.C3X;const IBehaviorInstance=self.IBehaviorInstance;const ENABLE=0;const TAGS=1;const EMPTY_SET=new Set;C3.Behaviors.solid.Instance=class SolidInstance extends C3.SDKBehaviorInstanceBase{constructor(behInst,properties){super(behInst);this.SetEnabled(true);if(properties){this.SetEnabled(properties[ENABLE]);this.SetTags(properties[TAGS])}}Release(){super.Release()}SetEnabled(e){this._inst._SetSolidEnabled(!!e)}IsEnabled(){return this._inst._IsSolidEnabled()}SetTags(tagList){const savedDataMap=
+this._inst.GetSavedDataMap();if(!tagList.trim()){savedDataMap.delete("solidTags");return}let solidTags=savedDataMap.get("solidTags");if(!solidTags){solidTags=new Set;savedDataMap.set("solidTags",solidTags)}solidTags.clear();for(const tag of tagList.split(" "))if(tag)solidTags.add(tag.toLowerCase())}GetTags(){return this._inst.GetSavedDataMap().get("solidTags")||EMPTY_SET}_GetTagsString(){return[...this.GetTags()].join(" ")}SaveToJson(){return{"e":this.IsEnabled()}}LoadFromJson(o){this.SetEnabled(o["e"])}GetPropertyValueByIndex(index){switch(index){case ENABLE:return this.IsEnabled()}}SetPropertyValueByIndex(index,
+value){switch(index){case ENABLE:this.SetEnabled(value);break}}GetDebuggerProperties(){return[{title:"$"+this.GetBehaviorType().GetName(),properties:[{name:"behaviors.solid.properties.enabled.name",value:this.IsEnabled(),onedit:v=>this.SetEnabled(v)},{name:"behaviors.solid.properties.tags.name",value:this._GetTagsString(),onedit:v=>this.SetTags(v)}]}]}GetScriptInterfaceClass(){return self.ISolidBehaviorInstance}};const map=new WeakMap;self.ISolidBehaviorInstance=class ISolidBehaviorInstance extends IBehaviorInstance{constructor(){super();
+map.set(this,IBehaviorInstance._GetInitInst().GetSdkInstance())}set isEnabled(e){map.get(this).SetEnabled(!!e)}get isEnabled(){return map.get(this).IsEnabled()}set tags(str){C3X.RequireString(str);map.get(this).SetTags(str)}get tags(){return map.get(this)._GetTagsString()}}}{const C3=self.C3;C3.Behaviors.solid.Cnds={IsEnabled(){return this.IsEnabled()}}}{const C3=self.C3;C3.Behaviors.solid.Acts={SetEnabled(e){this.SetEnabled(e)},SetTags(tagList){this.SetTags(tagList)}}}
+{const C3=self.C3;C3.Behaviors.solid.Exps={}};
 
 }
 
@@ -4623,66 +4623,69 @@ const C3 = self.C3;
 self.C3_GetObjectRefTable = function () {
 	return [
 		C3.Plugins.Sprite,
-		C3.Behaviors.solid,
-		C3.Behaviors.Platform,
 		C3.Behaviors.scrollto,
+		C3.Behaviors.Platform,
 		C3.Plugins.Keyboard,
 		C3.Plugins.TiledBg,
 		C3.Plugins.Text,
+		C3.Behaviors.solid,
 		C3.Plugins.Tilemap,
 		C3.Behaviors.Sin,
-		C3.Plugins.Sprite.Cnds.OnCollision,
-		C3.Plugins.System.Acts.SubVar,
-		C3.Plugins.Text.Acts.SetText,
 		C3.Behaviors.Platform.Cnds.IsMoving,
 		C3.Plugins.Sprite.Acts.SetAnim,
+		C3.Behaviors.Platform.Cnds.CompareSpeed,
 		C3.Behaviors.Platform.Cnds.IsJumping,
 		C3.Behaviors.scrollto.Cnds.IsEnabled,
 		C3.Behaviors.scrollto.Acts.SetEnabled,
 		C3.Plugins.Keyboard.Cnds.OnKey,
 		C3.Plugins.Sprite.Acts.SetMirrored,
-		C3.Behaviors.Platform.Cnds.CompareSpeed,
+		C3.Plugins.Sprite.Cnds.OnCollision,
 		C3.Plugins.System.Acts.AddVar,
+		C3.Plugins.Text.Acts.SetText,
 		C3.Plugins.Sprite.Acts.Destroy,
 		C3.Plugins.System.Acts.GoToLayout,
+		C3.Plugins.System.Acts.Wait,
+		C3.Plugins.System.Cnds.Else,
 		C3.Plugins.System.Cnds.CompareVar,
+		C3.Plugins.System.Acts.SubVar,
+		C3.Plugins.Sprite.Acts.SetPos,
+		C3.Plugins.System.Cnds.ForEach,
+		C3.Plugins.System.Cnds.Compare,
+		C3.Behaviors.Sin.Exps.CyclePosition,
 		C3.Plugins.Sprite.Cnds.CompareY,
 		C3.Plugins.Sprite.Exps.Y,
-		C3.Behaviors.Platform.Acts.SetVectorY,
-		C3.Plugins.System.Acts.Wait,
-		C3.Behaviors.Sin.Cnds.CompareMovement,
-		C3.Plugins.Sprite.Cnds.CompareX
+		C3.Plugins.Sprite.Acts.SetFlipped,
+		C3.Plugins.Sprite.Cnds.CompareX,
+		C3.Plugins.Sprite.Exps.X,
+		C3.Behaviors.Platform.Acts.SimulateControl,
+		C3.Behaviors.Platform.Acts.SetMaxFallSpeed,
+		C3.Plugins.System.Acts.RestartLayout
 	];
 };
 self.C3_JsPropNameTable = [
-	{Sprite2: 0},
-	{Sólido: 0},
-	{Crabmeat: 0},
-	{Plataforma: 0},
 	{CentrarEm: 0},
+	{Platform: 0},
 	{Sonic: 0},
 	{Teclado: 0},
 	{PlanoDeFundoEmBlocos: 0},
-	{Sprite7: 0},
 	{vida: 0},
-	{Sprite8: 0},
 	{Sprite4: 0},
 	{Solid: 0},
 	{Sprite5: 0},
 	{Sprite6: 0},
-	{Sprite9: 0},
 	{Sprite10: 0},
 	{TiledBackground3: 0},
 	{Sprite11: 0},
 	{Anel: 0},
 	{Anéis: 0},
 	{Sprite3: 0},
+	{Sólido: 0},
 	{Sprite12: 0},
 	{Sprite13: 0},
 	{Sprite14: 0},
 	{Sprite15: 0},
 	{Sprite16: 0},
-	{Sprite17: 0},
+	{PlacaFimDeAto: 0},
 	{Sprite18: 0},
 	{Sprite19: 0},
 	{Sprite20: 0},
@@ -4693,23 +4696,43 @@ self.C3_JsPropNameTable = [
 	{Mosaico: 0},
 	{PlanoDeFundoEmBlocos2: 0},
 	{Senóide: 0},
+	{BadnikBat: 0},
+	{Crabmeat: 0},
+	{Sprite2: 0},
+	{PlacaFimDeAto2: 0},
+	{Sprite17: 0},
+	{Sprite25: 0},
+	{Sprite26: 0},
+	{Chopper: 0},
+	{Sprite7: 0},
+	{Sprite8: 0},
+	{Sprite9: 0},
+	{Mosaico2: 0},
 	{Sprite24: 0},
-	{Aneis: 0}
+	{Ponte: 0},
+	{PlanoDeFundoEmBlocos3: 0},
+	{PlanoDeFundoEmBlocos4: 0},
+	{Sprite27: 0},
+	{Sprite28: 0},
+	{PlacaFimDeAto3: 0},
+	{Sprite29: 0},
+	{Plataforma: 0},
+	{Eggmano: 0},
+	{Sprite30: 0},
+	{Sprite31: 0},
+	{Texto: 0},
+	{Aneis: 0},
+	{Idle: 0}
 ];
 
 self.InstanceType = {
-	Sprite2: class extends self.ISpriteInstance {},
-	Crabmeat: class extends self.ISpriteInstance {},
 	Sonic: class extends self.ISpriteInstance {},
 	Teclado: class extends self.IInstance {},
 	PlanoDeFundoEmBlocos: class extends self.ITiledBackgroundInstance {},
-	Sprite7: class extends self.ISpriteInstance {},
 	vida: class extends self.ITextInstance {},
-	Sprite8: class extends self.ISpriteInstance {},
 	Sprite4: class extends self.ISpriteInstance {},
 	Sprite5: class extends self.ISpriteInstance {},
 	Sprite6: class extends self.ISpriteInstance {},
-	Sprite9: class extends self.ISpriteInstance {},
 	Sprite10: class extends self.ISpriteInstance {},
 	TiledBackground3: class extends self.ITiledBackgroundInstance {},
 	Sprite11: class extends self.ISpriteInstance {},
@@ -4721,7 +4744,7 @@ self.InstanceType = {
 	Sprite14: class extends self.ISpriteInstance {},
 	Sprite15: class extends self.ISpriteInstance {},
 	Sprite16: class extends self.ISpriteInstance {},
-	Sprite17: class extends self.ISpriteInstance {},
+	PlacaFimDeAto: class extends self.ISpriteInstance {},
 	Sprite18: class extends self.ISpriteInstance {},
 	Sprite19: class extends self.ISpriteInstance {},
 	Sprite20: class extends self.ISpriteInstance {},
@@ -4731,7 +4754,30 @@ self.InstanceType = {
 	Sprite23: class extends self.ISpriteInstance {},
 	Mosaico: class extends self.ITilemapInstance {},
 	PlanoDeFundoEmBlocos2: class extends self.ITiledBackgroundInstance {},
-	Sprite24: class extends self.ISpriteInstance {}
+	BadnikBat: class extends self.ISpriteInstance {},
+	Crabmeat: class extends self.ISpriteInstance {},
+	Sprite2: class extends self.ISpriteInstance {},
+	PlacaFimDeAto2: class extends self.ISpriteInstance {},
+	Sprite17: class extends self.ISpriteInstance {},
+	Sprite25: class extends self.ISpriteInstance {},
+	Sprite26: class extends self.ISpriteInstance {},
+	Chopper: class extends self.ISpriteInstance {},
+	Sprite7: class extends self.ISpriteInstance {},
+	Sprite8: class extends self.ISpriteInstance {},
+	Sprite9: class extends self.ISpriteInstance {},
+	Mosaico2: class extends self.ITilemapInstance {},
+	Sprite24: class extends self.ISpriteInstance {},
+	Ponte: class extends self.ISpriteInstance {},
+	PlanoDeFundoEmBlocos3: class extends self.ITiledBackgroundInstance {},
+	PlanoDeFundoEmBlocos4: class extends self.ITiledBackgroundInstance {},
+	Sprite27: class extends self.ISpriteInstance {},
+	Sprite28: class extends self.ISpriteInstance {},
+	PlacaFimDeAto3: class extends self.ISpriteInstance {},
+	Sprite29: class extends self.ISpriteInstance {},
+	Eggmano: class extends self.ISpriteInstance {},
+	Sprite30: class extends self.ISpriteInstance {},
+	Sprite31: class extends self.ISpriteInstance {},
+	Texto: class extends self.ITextInstance {}
 }
 }
 
@@ -4832,29 +4878,48 @@ function or(l, r)
 }
 
 self.C3_ExpressionFuncs = [
-		() => 1,
-		p => {
-			const v0 = p._GetNode(0).GetVar();
-			return () => and(v0.GetValue(), " life");
-		},
 		() => "Andando",
+		() => 2000,
+		() => "Correndo",
 		() => "Pulando",
 		() => "Parado",
-		() => 1000,
-		() => "Correndo",
+		() => 1,
 		p => {
 			const v0 = p._GetNode(0).GetVar();
 			return () => and("RINGS ", v0.GetValue());
 		},
+		() => 0.3,
+		() => 0,
+		() => 456,
+		() => 577,
 		() => 5,
 		p => {
 			const n0 = p._GetNode(0);
-			return () => (n0.ExpObject() - 40);
+			return () => n0.ExpBehavior();
 		},
-		() => -20,
-		() => "Flor",
-		() => 0.3,
-		() => 1084
+		() => 0.25,
+		() => 0.75,
+		p => {
+			const n0 = p._GetNode(0);
+			return () => (n0.ExpObject() - 20);
+		},
+		() => 385,
+		() => 723,
+		p => {
+			const n0 = p._GetNode(0);
+			return () => n0.ExpObject();
+		},
+		() => 300,
+		() => 900,
+		p => {
+			const n0 = p._GetNode(0);
+			return () => (n0.ExpObject() - 25);
+		},
+		p => {
+			const n0 = p._GetNode(0);
+			return () => (n0.ExpObject() + 0);
+		},
+		() => 0.2
 ];
 
 
