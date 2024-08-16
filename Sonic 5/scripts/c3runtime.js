@@ -4721,6 +4721,7 @@ self.C3_JsPropNameTable = [
 	{Sprite30: 0},
 	{Sprite31: 0},
 	{Texto: 0},
+	{Sprite32: 0},
 	{Aneis: 0},
 	{Idle: 0}
 ];
@@ -4777,7 +4778,8 @@ self.InstanceType = {
 	Eggmano: class extends self.ISpriteInstance {},
 	Sprite30: class extends self.ISpriteInstance {},
 	Sprite31: class extends self.ISpriteInstance {},
-	Texto: class extends self.ITextInstance {}
+	Texto: class extends self.ITextInstance {},
+	Sprite32: class extends self.ISpriteInstance {}
 }
 }
 
